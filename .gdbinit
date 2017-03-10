@@ -33,12 +33,12 @@ define skipdir
     end
 end
 
-# skip all STL sources files and other libraries in '/usr'
+# skip all STL source files and other libraries in '/usr'
 define skipstl
     skipdir /usr/include
 end
 
-# hooks that to run skipstl
+# hooks that run skipstl
 define hookpost-run
     skipstl
 end
