@@ -1,5 +1,4 @@
-# skip all STL sources files and other in '/usr'
-define skipstl
+define skipdir_python
 python
 # get all sources loadable by gdb
 def GetSources():
@@ -18,10 +17,28 @@ def SkipDir(dir):
 
 # apply only for c++
 if 'c++' in gdb.execute('show language', to_string=True):
-    SkipDir("/usr/include")
+    dir = str(gdb.parse_and_eval("$skipdirargument"))
+    dir = dir.replace("\"","");
+    SkipDir(dir)
 end
 end
 
+# skip all files in provided directory
+define skipdir
+    if $argc != 1
+        echo Usage: skipdir </absolute/path>\n
+    else
+        set $skipdirargument = "$arg0"
+        skipdir_python
+    end
+end
+
+# skip all STL sources files and other libraries in '/usr'
+define skipstl
+    skipdir /usr/include
+end
+
+# hooks that to run skipstl
 define hookpost-run
     skipstl
 end
